@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="pl" class="h-full antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardlyBOT – Status</title>
+    <link rel="icon" href="https://i.imgur.com/vryeQy6.png" type="image/png">
+    <meta name="description" content="Status GuardlyBOT – sprawdź aktualną dostępność bota.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #080a0e;
+            color: #f0f4f8;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.6s ease, color 0.6s ease;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.25);
+            --bg-dark: #080a0e;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.06);
+            --text-muted: #8a94a6;
+            --gold: #fbbf24;
+            --gold-dark: #d97706;
+            --gold-glow: rgba(251, 191, 36, 0.3);
+            --status-green: #22c55e;
+            --status-red: #ef4444;
+            --status-yellow: #eab308;
+        }
+
+        body.gold-mode {
+            background: #1a1408;
+            --text-muted: #a89870;
+        }
+        body.gold-mode .nav-logo span {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.gold-mode .btn-primary {
+            background: #fbbf24;
+            color: #1a1408 !important;
+            box-shadow: 0 0 30px -6px rgba(251, 191, 36, 0.4);
+        }
+        body.gold-mode .btn-primary:hover {
+            background: #fcd34d;
+        }
+        body.gold-mode .section-header .label {
+            color: #fbbf24;
+        }
+        body.gold-mode .highlight {
+            background: linear-gradient(135deg, #fbbf24, #d97706) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+        body.gold-mode .footer-social a:hover {
+            border-color: #fbbf24;
+            color: #fbbf24;
+        }
+        body.gold-mode .footer-links a:hover {
+            color: #fbbf24;
+        }
+        body.gold-mode .uptime-card {
+            border-color: rgba(251, 191, 36, 0.08);
+        }
+        body.gold-mode .uptime-card:hover {
+            border-color: rgba(251, 191, 36, 0.15);
+        }
+        body.gold-mode .history-item:hover {
+            border-color: rgba(251, 191, 36, 0.1);
+        }
+        body.gold-mode .stat-box:hover {
+            border-color: rgba(251, 191, 36, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-padding {
+            padding: 4rem 0;
+        }
+
+        /* ---------- NAV ---------- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            padding: 0.9rem 0;
+            background: rgba(8, 10, 14, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: background 0.4s, border-color 0.4s;
+        }
+        body.gold-mode nav {
+            background: rgba(26, 20, 8, 0.85);
+            border-bottom-color: rgba(251, 191, 36, 0.08);
+        }
+        nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo img {
+            height: 34px;
+            width: auto;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.2));
+        }
+        body.gold-mode .nav-logo img {
+            filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.3));
+        }
+        .nav-logo span {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.5s;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+        }
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: #fff;
+        }
+        .nav-links a.active {
+            color: #fff;
+        }
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        body.gold-mode .nav-links a.active::after {
+            background: #fbbf24;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 0.5rem 1.6rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 0 20px -6px var(--primary-glow);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 30px -4px var(--primary-glow);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff !important;
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary) !important;
+            box-shadow: none;
+        }
+        body.gold-mode .btn-outline:hover {
+            border-color: #fbbf24;
+            color: #fbbf24 !important;
+        }
+
+        /* ---------- STATUS HERO ---------- */
+        .status-hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: #080a0e;
+            padding-top: 80px;
+            transition: background 0.6s;
+        }
+        body.gold-mode .status-hero {
+            background: #1a1408;
+        }
+        .status-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 40%, rgba(37, 99, 235, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+            transition: background 0.8s;
+        }
+        body.gold-mode .status-hero::before {
+            background: radial-gradient(circle at 50% 40%, rgba(251, 191, 36, 0.08) 0%, transparent 60%);
+        }
+        .status-hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, transparent 30%, black 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, transparent 30%, black 80%);
+        }
+        .status-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem 0;
+        }
+
+        /* ---------- STATUS INDICATOR ---------- */
+        .status-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .status-symbol {
+            font-size: 7rem;
+            font-weight: 900;
+            line-height: 1;
+            transition: all 0.4s;
+            display: inline-block;
+            animation: pulseStatus 2s ease-in-out infinite;
+        }
+        @keyframes pulseStatus {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        .status-symbol.green {
+            color: var(--status-green);
+            text-shadow: 0 0 60px rgba(34, 197, 94, 0.3);
+        }
+        .status-symbol.red {
+            color: var(--status-red);
+            text-shadow: 0 0 60px rgba(239, 68, 68, 0.3);
+            animation: pulseStatusRed 1.2s ease-in-out infinite;
+        }
+        @keyframes pulseStatusRed {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .status-symbol.yellow {
+            color: var(--status-yellow);
+            text-shadow: 0 0 60px rgba(234, 179, 8, 0.3);
+            animation: pulseStatusYellow 1.6s ease-in-out infinite;
+        }
+        @keyframes pulseStatusYellow {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.06) rotate(4deg); }
+        }
+
+        .status-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .status-label.green {
+            color: var(--status-green);
+        }
+        .status-label.red {
+            color: var(--status-red);
+        }
+        .status-label.yellow {
+            color: var(--status-yellow);
+        }
+
+        .status-datetime {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 0.1rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ---------- UPTIME WIDGET (jak na obrazku) ---------- */
+        .uptime-widget {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 2rem 2.5rem;
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 2rem;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .uptime-widget:hover {
+            border-color: rgba(37, 99, 235, 0.08);
+        }
+        .uptime-widget .uptime-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+        .uptime-widget .uptime-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--status-green);
+        }
+        .uptime-widget .uptime-period {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .uptime-widget .uptime-today {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+        }
+        .uptime-widget .uptime-today strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        .uptime-widget .uptime-icon {
+            font-size: 2rem;
+            color: var(--status-green);
+        }
+
+        /* ---------- STATUS HISTORY ---------- */
+        .status-history {
+            background: #0b0e13;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background 0.6s, border-color 0.6s;
+        }
+        body.gold-mode .status-history {
+            background: #1a1408;
+            border-color: rgba(251, 191, 36, 0.05);
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+        .section-header .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            display: inline-block;
+            transition: color 0.4s;
+        }
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .section-header p {
+            color: var(--text-muted);
+            max-width: 500px;
+            margin-top: 0.2rem;
+            transition: color 0.6s;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            transition: all 0.3s;
+        }
+        .history-item:hover {
+            border-color: rgba(37, 99, 235, 0.08);
+            transform: translateX(4px);
+        }
+
+        .history-icon {
+            font-size: 1.8rem;
+            font-weight: 700;
+            min-width: 2.8rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .history-icon.green {
+            color: var(--status-green);
+        }
+        .history-icon.red {
+            color: var(--status-red);
+        }
+        .history-icon.yellow {
+            color: var(--status-yellow);
+        }
+
+        .history-info {
+            flex: 1;
+        }
+        .history-info .date {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .history-info .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .history-info .desc .highlight-green {
+            color: var(--status-green);
+            font-weight: 600;
+        }
+        .history-info .desc .highlight-red {
+            color: var(--status-red);
+            font-weight: 600;
+        }
+        .history-info .desc .highlight-yellow {
+            color: var(--status-yellow);
+            font-weight: 600;
+        }
+
+        .history-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        /* ---------- STATS SUMMARY ---------- */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.2rem 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .stat-box:hover {
+            border-color: rgba(37, 99, 235, 0.08);
+        }
+        .stat-box .number {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .stat-box .number.green {
+            color: var(--status-green);
+        }
+        .stat-box .number.red {
+            color: var(--status-red);
+        }
+        .stat-box .number.yellow {
+            color: var(--status-yellow);
+        }
+        .stat-box .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        /* ---------- FOOTER ---------- */
+        footer {
+            background: #0b0e13;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 2rem 0 1.5rem;
+            margin-top: auto;
+            transition: background 0.6s, border-color 0.6s;
+        }
+        body.gold-mode footer {
+            background: #1a1408;
+            border-color: rgba(251, 191, 36, 0.05);
+        }
+        .footer-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .footer-inner .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .footer-inner .brand img {
+            height: 26px;
+            width: auto;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .footer-inner .brand span {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.5s;
+        }
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .footer-links a:hover {
+            color: #fff;
+        }
+        .footer-social {
+            display: flex;
+            gap: 0.6rem;
+        }
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: 0.25s;
+        }
+        .footer-social a:hover {
+            color: #fff;
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.06);
+            transform: translateY(-2px);
+        }
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: border-color 0.6s;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 768px) {
+            .status-symbol {
+                font-size: 5rem;
+            }
+            .uptime-widget {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            .uptime-widget .uptime-value {
+                font-size: 2.2rem;
+            }
+            .uptime-widget .uptime-today {
+                justify-self: center;
+            }
+            .history-item {
+                flex-wrap: wrap;
+                gap: 0.6rem;
+                padding: 0.8rem 1rem;
+            }
+            .history-time {
+                width: 100%;
+                text-align: left;
+                padding-left: 0;
+            }
+            .stats-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                background: #0b0e13;
+                padding: 1.5rem;
+                border-radius: 20px;
+                position: absolute;
+                top: 68px;
+                right: 1rem;
+                width: 200px;
+                border: 1px solid var(--border);
+                gap: 1rem;
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .mobile-toggle {
+                display: block !important;
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1.6rem;
+                cursor: pointer;
+            }
+            .status-hero {
+                min-height: 50vh;
+            }
+        }
+        @media (min-width: 769px) {
+            .mobile-toggle {
+                display: none !important;
+            }
+        }
+
+        .mobile-toggle {
+            display: none;
+        }
+
+        .ti {
+            vertical-align: middle;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 {
+            transition-delay: 0.08s;
+        }
+        .reveal-delay-2 {
+            transition-delay: 0.16s;
+        }
+        .reveal-delay-3 {
+            transition-delay: 0.24s;
+        }
+        .reveal-delay-4 {
+            transition-delay: 0.32s;
+        }
+
+        /* ---------- GOLD WAVE ---------- */
+        .gold-wave-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
+        .gold-wave-overlay.active {
+            opacity: 1;
+            pointer-events: none;
+        }
+        .gold-wave {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    transparent 0%,
+                    rgba(251, 191, 36, 0.12) 20%,
+                    rgba(251, 191, 36, 0.5) 40%,
+                    rgba(251, 191, 36, 0.7) 50%,
+                    rgba(251, 191, 36, 0.5) 60%,
+                    rgba(251, 191, 36, 0.12) 80%,
+                    transparent 100%);
+            background-size: 200% 100%;
+            animation: waveSweep 1.0s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            border-radius: 0;
+        }
+        @keyframes waveSweep {
+            0% {
+                background-position: -100% 0%;
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                background-position: 200% 0%;
+                opacity: 0;
+            }
+        }
+        .gold-wave-overlay .gold-flash {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(251, 191, 36, 0.06) 0%, transparent 70%);
+            opacity: 0;
+            animation: flashPulse 1.2s ease forwards;
+        }
+        @keyframes flashPulse {
+            0% {
+                opacity: 0;
+            }
+            25% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== GOLD WAVE OVERLAY ========== -->
+    <div class="gold-wave-overlay" id="goldWaveOverlay">
+        <div class="gold-wave"></div>
+        <div class="gold-flash"></div>
+    </div>
+
+    <!-- ========== NAV ========== -->
+    <nav>
+        <div class="container">
+            <div class="nav-logo" id="navLogo">
+                <img src="https://i.imgur.com/vryeQy6.png" alt="GuardlyBOT" id="mainLogo" loading="lazy">
+                <span>GuardlyBOT</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Strona główna</a>
+                <a href="index.html#features">Funkcje</a>
+                <a href="index.html#team">Zespół</a>
+                <a href="index.html#premium">Premium</a>
+                <a href="https://dc.gg/guardly" target="_blank" rel="noopener noreferrer">
+                    <i class="ti ti-brand-discord" style="font-size:1.1rem;"></i> Discord
+                </a>
+                <a href="status.html" class="active">Status</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=1543371646675451924&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                    <i class="ti ti-plus" style="font-size:1.1rem;"></i> Dodaj na serwer
+                </a>
+            </div>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+                <i class="ti ti-menu-2"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ========== STATUS HERO ========== -->
+    <section class="status-hero" id="statusHero">
+        <div class="status-hero-grid"></div>
+        <div class="container status-content">
+            <div class="status-indicator reveal">
+                <div class="status-symbol green" id="statusSymbol">✓</div>
+                <div class="status-label green" id="statusLabel">Wszystko działa poprawnie</div>
+                <div class="status-datetime" id="statusDateTime">--:--</div>
+            </div>
+
+            <!-- UPTIME WIDGET – jak na obrazku -->
+            <div class="uptime-widget reveal reveal-delay-1" id="uptimeWidget">
+                <div class="uptime-icon"><i class="ti ti-server"></i></div>
+                <div>
+                    <div class="uptime-label">Uptime</div>
+                    <div class="uptime-value" id="uptimeValue">99.985%</div>
+                    <div class="uptime-period" id="uptimePeriod">Ostatnie 30 dni</div>
+                </div>
+                <div class="uptime-today" id="uptimeToday"><strong>Today</strong> · 2026-08-30</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== STATUS HISTORY ========== -->
+    <section class="status-history section-padding" id="history">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="label">📋 Historia</span>
+                <h2>Ostatnie <span class="highlight">zdarzenia</span></h2>
+                <p>Pełna historia statusu bota – wszystkie zmiany i incydenty.</p>
+            </div>
+
+            <!-- Statystyki podsumowujące -->
+            <div class="stats-summary reveal reveal-delay-1" id="statsSummary">
+                <div class="stat-box">
+                    <div class="number green" id="statOk">0</div>
+                    <div class="label">✅ Dni bezproblemowych</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number red" id="statFail">0</div>
+                    <div class="label">❌ Awarie</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number yellow" id="statMaintenance">0</div>
+                    <div class="label">🔧 Konserwacje</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" style="color:var(--primary);" id="statTotal">0</div>
+                    <div class="label">📊 Łącznie wpisów</div>
+                </div>
+            </div>
+
+            <!-- Lista historyczna -->
+            <div class="history-grid" id="historyList">
+                <!-- Wypełniane przez JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div class="brand">
+                    <img src="https://i.imgur.com/vryeQy6.png" alt="GuardlyBOT" id="footerLogo" loading="lazy">
+                    <span>GuardlyBOT</span>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html#premium">Premium</a>
+                    <a href="https://dc.gg/guardly" target="_blank" rel="noopener noreferrer">Discord</a>
+                    <a href="https://discord.com/oauth2/authorize?client_id=1543371646675451924&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noopener noreferrer">Dodaj na serwer</a>
+                    <a href="status.html">Status</a>
+                    <a href="#">Polityka prywatności</a>
+                    <a href="#">Regulamin</a>
+                </div>
+                <div class="footer-social">
+                    <a href="https://dc.gg/guardly" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="ti ti-brand-discord"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="ti ti-brand-youtube"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="ti ti-brand-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 GuardlyBOT. Wszelkie prawa zastrzeżone.</span>
+                <span>Wersja 2.0</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== SKRYPTY ========== -->
+    <script>
+        // ---------- MOBILE TOGGLE ----------
+        const toggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => navLinks.classList.remove('open'));
+        });
+
+        // ---------- REVEAL ON SCROLL ----------
+        const revealEls = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        revealEls.forEach(el => observer.observe(el));
+
+        // ---------- GOLD MODE (brak przycisku na tej stronie, ale zachowujemy) ----------
+
+        // ---------- STATUS LOGIC ----------
+        const CURRENT_STATUS = 'ok'; // 'ok', 'fail', 'maintenance'
+
+        const statusSymbol = document.getElementById('statusSymbol');
+        const statusLabel = document.getElementById('statusLabel');
+        const statusDateTime = document.getElementById('statusDateTime');
+
+        const statusMap = {
+            ok: {
+                symbol: '✓',
+                label: 'Wszystko działa poprawnie',
+                class: 'green'
+            },
+            fail: {
+                symbol: '✗',
+                label: 'Bot nie działa',
+                class: 'red'
+            },
+            maintenance: {
+                symbol: '!',
+                label: 'Przerwa konserwacyjna',
+                class: 'yellow'
+            }
+        };
+
+        function updateStatus(statusKey) {
+            const data = statusMap[statusKey] || statusMap.ok;
+            statusSymbol.textContent = data.symbol;
+            statusSymbol.className = 'status-symbol ' + data.class;
+            statusLabel.textContent = data.label;
+            statusLabel.className = 'status-label ' + data.class;
+        }
+
+        updateStatus(CURRENT_STATUS);
+
+        // ---------- DATA I CZAS (aktualizacja co minutę) ----------
+        function updateDateTime() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pl-PL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const timeStr = now.toLocaleTimeString('pl-PL', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('statusDateTime').textContent = dateStr + ', ' + timeStr;
+            // Uptime widget "Today"
+            document.getElementById('uptimeToday').innerHTML = `<strong>Today</strong> · ${dateStr}`;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+
+        // ---------- UPTIME WIDGET – dane przykładowe (można zmienić) ----------
+        // W rzeczywistości można by pobierać z API, ale na razie statyczne
+        document.getElementById('uptimeValue').textContent = '99.985%';
+        document.getElementById('uptimePeriod').textContent = 'Ostatnie 30 dni';
+
+        // ---------- HISTORIA ZDARZEŃ (przykładowe dane) ----------
+        const historyData = [];
+
+        function generateHistory() {
+            const statuses = ['ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'fail', 'ok', 'ok', 'ok', 'maintenance', 'ok', 'ok', 'ok',
+                'ok', 'fail', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'maintenance', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok'
+            ];
+            const descriptions = {
+                ok: 'Brak problemów – bot działał bez zarzutu.',
+                fail: 'Awaria serwera – bot był niedostępny przez 12 minut.',
+                maintenance: 'Planowa konserwacja – aktualizacja systemu.'
+            };
+            const now = new Date();
+
+            for (let i = 0; i < statuses.length; i++) {
+                const d = new Date(now);
+                d.setDate(d.getDate() - (statuses.length - 1 - i));
+                const status = statuses[i];
+                historyData.push({
+                    date: d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                    time: d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }),
+                    status: status,
+                    description: descriptions[status] || 'Brak danych.'
+                });
+            }
+            return historyData;
+        }
+
+        const history = generateHistory();
+
+        // ---------- RENDER HISTORY ----------
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            container.innerHTML = '';
+
+            const sorted = [...history].reverse();
+
+            sorted.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item reveal';
+
+                const statusMapLocal = {
+                    ok: { icon: '✓', class: 'green', label: 'OK' },
+                    fail: { icon: '✗', class: 'red', label: 'AWARIA' },
+                    maintenance: { icon: '!', class: 'yellow', label: 'KONSERWACJA' }
+                };
+                const info = statusMapLocal[item.status] || statusMapLocal.ok;
+
+                div.innerHTML = `
+                    <div class="history-icon ${info.class}">${info.icon}</div>
+                    <div class="history-info">
+                        <div class="date">${item.date}</div>
+                        <div class="desc">
+                            <span class="highlight-${info.class}">${info.label}</span> – ${item.description}
+                        </div>
+                    </div>
+                    <div class="history-time">${item.time}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            // Ponownie uruchom observer dla nowych elementów
+            const newReveals = container.querySelectorAll('.reveal');
+            newReveals.forEach(el => {
+                observer.observe(el);
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    el.classList.add('visible');
+                }
+            });
+
+            updateStats();
+        }
+
+        // ---------- STATYSTYKI ----------
+        function updateStats() {
+            let okCount = 0,
+                failCount = 0,
+                maintCount = 0;
+            history.forEach(item => {
+                if (item.status === 'ok') okCount++;
+                else if (item.status === 'fail') failCount++;
+                else if (item.status === 'maintenance') maintCount++;
+            });
+
+            document.getElementById('statOk').textContent = okCount;
+            document.getElementById('statFail').textContent = failCount;
+            document.getElementById('statMaintenance').textContent = maintCount;
+            document.getElementById('statTotal').textContent = history.length;
+        }
+
+        // ---------- INIT ----------
+        renderHistory();
+
+        console.log('📊 GuardlyBOT – Status page with uptime widget');
+    </script>
+
+</body>
+</html>
